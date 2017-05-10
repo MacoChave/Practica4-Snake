@@ -114,30 +114,42 @@ namespace Practica_Snake.Tablero
                 //limpiar el puerto
                 PortAccess.Output(ADRESS, 0);
 
-                PortAccess.Output(ADRESS, 1);
+                PortAccess.Output(ADRESS, 1); /* DATO: 1 RELOJ: 0*/
                 //MessageBox.Show("DATO " + 1);
-                PortAccess.Output(ADRESS, 3);
+                PortAccess.Output(ADRESS, 3); /* DATO: 1 RELOJ: 1*/
                 //MessageBox.Show("RELOJ " + 3);
                 //Console.Write("1\t");
                 Thread.Sleep(Tiempo);
 
                 for (int j = 0; j < 12; j++)
                 {
-                    PortAccess.Output(ADRESS, tablero[i, j]);
-                    //MessageBox.Show("DATO " + tablero[i, j]);
-                    PortAccess.Output(ADRESS, tablero[i, j] + 2);
-                    //MessageBox.Show("RELOJ " + tablero[i, j] + 2);
+                    if (tablero[i, j] > 0)
+                    {
+                        PortAccess.Output(ADRESS, 1); /* DATO: 1 RELOJ: 0*/
+                        //MessageBox.Show("DATO " + tablero[i, j]);
+                        PortAccess.Output(ADRESS, 3); /* DATO: 1 RELOJ: 1*/
+                        //MessageBox.Show("RELOJ " + tablero[i, j] + 2);
+                    }
+                    else
+                    {
+                        PortAccess.Output(ADRESS, 0); /* DATO: 0 RELOJ: 0*/
+                        //MessageBox.Show("DATO " + tablero[i, j]);
+                        PortAccess.Output(ADRESS, 2); /* DATO: 1 RELOJ: 1*/
+                        //MessageBox.Show("RELOJ " + tablero[i, j] + 2);
+                    }
+                    
                     
                     //Console.Write(tablero[i, j] + "\t");
                     Thread.Sleep(Tiempo);
                 }
 
-                PortAccess.Output(ADRESS, 0);
+                PortAccess.Output(ADRESS, 0); /* DATO: 0 RELOJ: 0*/
                 //MessageBox.Show("DATO " + 0);
-                PortAccess.Output(ADRESS, 2);
-                Thread.Sleep(Tiempo);
+                PortAccess.Output(ADRESS, 2); /* DATO: 0 RELOJ: 1*/
                 //MessageBox.Show("RELOJ " + 2);
-                //MessageBox.Show("FILA " + i);
+                
+                Thread.Sleep(Tiempo);
+                //MessageBox.Show("COLUMNA " + i);
                 //Console.WriteLine("0");
                 //Console.WriteLine("");
             }
