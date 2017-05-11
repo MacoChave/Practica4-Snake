@@ -8,12 +8,15 @@ namespace Practica_Snake
 {
     class Juego
     {
+        string tiempo_pausa;
         int puntos;
         double tiempo;
         int nivel;
         int velocidad;
         Usuario usuario;
         System.Windows.Forms.Timer timer;
+        ThreadStart delegadoDatosPuerto;
+        Thread hiloDatosPuerto;
         bool ganador;
         bool play;
         Snake serpiente;
@@ -45,11 +48,17 @@ namespace Practica_Snake
         }
         public void parar()
         {
+            hiloDatosPuerto.Abort();
             timer.Stop();
             play = false;
             usuario.setNivel(this.nivel);
-            double tiempo_d = Convert.ToDouble(txtTiempo.Text);
-            int tiempo_int = Convert.ToInt32(tiempo_d);
+            int tiempo_int;
+            try
+            {
+                tiempo_int = Convert.ToInt32(txtTiempo.Text);
+            }catch(Exception e){
+                tiempo_int=0;
+            }
             usuario.setTiempo(tiempo_int);
             usuario.setPuntos(puntos);
             if (txtNivel.InvokeRequired || txtPuntos.InvokeRequired||btn_salir.InvokeRequired)
@@ -82,14 +91,18 @@ namespace Practica_Snake
         }
         public void iniciar()
         {
-            
+            tiempo_pausa = Interaction.InputBox("Tiempo", "Tiempo pantalla", "0");
             play=true;
             tablero.setComida(0, 0);
             //Creamos el delegado con el nombre del metodo a ejecutar
-            ThreadStart delegado = new ThreadStart(enviarDatosPuerto);
-            Thread hilo = new Thread(delegado);
-            hilo.Start();
-
+            delegadoDatosPuerto = new ThreadStart(enviarDatosPuerto);
+            hiloDatosPuerto = new Thread(delegadoDatosPuerto);
+            hiloDatosPuerto.Start();
+            //for (int i = 0; i < 20000;i++ )
+            //{
+            //    enviarDatosPuerto();
+            //}
+            
             while (play && !ganador)
             {
                 int x = serpiente._cabeza.getX();
@@ -122,11 +135,10 @@ namespace Practica_Snake
         }
         public void enviarDatosPuerto()
         {
-            string tiempo=Interaction.InputBox("Tiempo", "Tiempo pantalla", "Default Text");
             int tiempoSleep;
             try
             {
-                tiempoSleep=Convert.ToInt32(tiempo);
+                tiempoSleep=Convert.ToInt32(tiempo_pausa);
             }catch(Exception e)
             {
                 tiempoSleep = 0;
@@ -183,18 +195,43 @@ namespace Practica_Snake
                     tablero.setNivel(nivel);
                     serpiente.setSerpienteNivel(nivel);
                     velocidad = 600;
-                    txtNivel.Text = nivel.ToString();
+                    if (txtNivel.InvokeRequired)
+                    {
+                        //si es así entonces volvemos a llamar a CambiarProgreso pero esta vez a través del delegado 
+                        //instanciamos el delegado indicandole el método que va a ejecutar 
+                        mostrarDatosDelegado delegado = new mostrarDatosDelegado(mostrarDatosForm);
+                        //ya que el delegado invocará a CambiarProgreso debemos indicarle los parámetros 
+                        //invocamos el método a través del mismo contexto del formulario (this) y enviamos los parámetros 
+                        txtNivel.Invoke(delegado);
+                    }
+                    else
+                    {
+                        mostrarDatosForm();
+                    }
                     break;
-                case 20:
+                case 15:
                     nivel = 3;
                     tablero.setNivel(nivel);
                     serpiente.setSerpienteNivel(nivel);
-                    velocidad = 200;
+                    velocidad = 400;
                     Console.WriteLine("nivel 2");
-                    txtNivel.Text = nivel.ToString();
+                    if (txtNivel.InvokeRequired)
+                    {
+                        //si es así entonces volvemos a llamar a CambiarProgreso pero esta vez a través del delegado 
+                        //instanciamos el delegado indicandole el método que va a ejecutar 
+                        mostrarDatosDelegado delegado = new mostrarDatosDelegado(mostrarDatosForm);
+                        //ya que el delegado invocará a CambiarProgreso debemos indicarle los parámetros 
+                        //invocamos el método a través del mismo contexto del formulario (this) y enviamos los parámetros 
+                        txtNivel.Invoke(delegado);
+                    }
+                    else
+                    {
+                        mostrarDatosForm();
+                    }
                     break;
-                case 30:
+                case 20:
                     ganador = true;
+                    MessageBox.Show("Has GANADO");
                     break;
             }
         }
