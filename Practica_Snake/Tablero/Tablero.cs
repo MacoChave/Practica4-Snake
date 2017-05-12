@@ -147,7 +147,12 @@ namespace Practica_Snake.Tablero
                 //MessageBox.Show("DATO " + 0);
                 PortAccess.Output(ADRESS, 2); /* DATO: 0 RELOJ: 1*/
                 //MessageBox.Show("RELOJ " + 2);
-                
+                PortAccess.Output(ADRESS, 0); /* DATO: 0 RELOJ: 0*/
+                //MessageBox.Show("DATO " + 0);
+                PortAccess.Output(ADRESS, 2); /* DATO: 0 RELOJ: 1*/
+                PortAccess.Output(ADRESS, 0); /* DATO: 0 RELOJ: 0*/
+                //MessageBox.Show("DATO " + 0);
+                PortAccess.Output(ADRESS, 2); /* DATO: 0 RELOJ: 1*/
                 Thread.Sleep(Tiempo);
                 //MessageBox.Show("COLUMNA " + i);
                 //Console.WriteLine("0");
